@@ -82,9 +82,9 @@ function askUser(products) {
       if (quantityChosen < productChosen.stock_quantity) {
         //log the success message for the user and show the final price
         console.log(
-          "Product added to your cart! You pay: " +
+          "\nProduct added to your cart! You pay: " +
             "$" +
-            quantityChosen * price
+            quantityChosen * price + "\n"
         );
         updateStocks(productChosen, quantityChosen);
       } else {
@@ -98,7 +98,7 @@ function askUser(products) {
 
 function updateStocks(productChosen, quantityChosen) {
   //log a message for the user that the stocks are up to date
-  console.log("Updating Stocks, Check last column of the product for remaining stocks");
+  console.log("\nUpdating Stocks, Check last column of the product for remaining stocks\n");
   //make an UPDATE query to the DB where stocks = original stock - user chosen quantity
   connection.query(
     "UPDATE products SET ? WHERE ?",
