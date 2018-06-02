@@ -31,8 +31,6 @@ function showItems() {
   });
 }
 
-
-
 function askUser(products) {
   inquirer
     .prompt([
@@ -47,7 +45,6 @@ function askUser(products) {
           }
           return false;
         }
-
       },
       {
         // The second message should ask how many units of the product they would like to buy.
@@ -62,43 +59,48 @@ function askUser(products) {
         }
       }
     ])
-    .then(function(answer) {
+    .then(function(answer, err) {
       //log the response obtained from the prompt
       // console.log("Answer", answer);
       // console.log("Products", products);
       //declare variables to store the user inputs for id and quantity
       var itemChosen = parseInt(answer.id);
       var quantityChosen = answer.quantity;
+      var productChosen = products[itemChosen - 1];
+      var price;
 
-      var productChosen = products[itemChosen-1];
-      
+      if (err) throw err;
+
       if (!productChosen) {
         console.log("\nInvalid ID, Please enter a correct ID from the table\n");
         showItems();
-      }
-      
-      var price = productChosen.price;
-      //if the stock_quantity is lesser than the quantity entered by the user, consider it as successful purchase
-      if (quantityChosen < productChosen.stock_quantity) {
-        //log the success message for the user and show the final price
-        console.log(
-          "\nProduct added to your cart! You pay: " +
-            "$" +
-            quantityChosen * price + "\n"
-        );
-        updateStocks(productChosen, quantityChosen);
       } else {
-        //else ask the user to  Enter lesser quantity
-        console.log("\nOops! Out of Stock! Try Again\n");
-        //show the table of products again for the user to make a choice again
-        showItems();
+        price = productChosen.price;
+        //if the stock_quantity is lesser than the quantity entered by the user, consider it as successful purchase
+        if (quantityChosen < productChosen.stock_quantity) {
+          //log the success message for the user and show the final price
+          console.log(
+            "\nProduct added to your cart! You pay: " +
+              "$" +
+              quantityChosen * price +
+              "\n"
+          );
+          updateStocks(productChosen, quantityChosen);
+        } else {
+          //else ask the user to  Enter lesser quantity
+          console.log("\nOops! Out of Stock! Try Again\n");
+          //show the table of products again for the user to make a choice again
+          showItems();
+        }
       }
     });
 }
 
 function updateStocks(productChosen, quantityChosen) {
   //log a message for the user that the stocks are up to date
-  console.log("\nUpdating Stocks, Check last column of the product for remaining stocks\n");
+  console.log(
+    "\nUpdating Stocks, Check last column of the product for remaining stocks\n"
+  );
   //make an UPDATE query to the DB where stocks = original stock - user chosen quantity
   connection.query(
     "UPDATE products SET ? WHERE ?",
@@ -113,10 +115,9 @@ function updateStocks(productChosen, quantityChosen) {
     function(err, res) {
       if (err) throw err;
       //log the rows affected after UPDATE is performed
-      console.log("\nAffected product stocks: ",res.affectedRows +"\n");
+      console.log("\nAffected product stocks: ", res.affectedRows + "\n");
       //show the updated table again
       showItems();
-      
     }
   );
 }
