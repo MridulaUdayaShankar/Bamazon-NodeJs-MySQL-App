@@ -24,6 +24,7 @@ connection.connect(function(err) {
 function showItems() {
   connection.query("SELECT * FROM products", function(error, response) {
     if (error) throw error;
+    //use console.table npm package to display products in a table form
     console.table(response);
     console.log("------------------------------------------------------");
     askUser(response);
@@ -63,8 +64,8 @@ function askUser(products) {
     ])
     .then(function(answer) {
       //log the response obtained from the prompt
-      console.log("Answer", answer);
-      console.log("Products", products);
+      // console.log("Answer", answer);
+      // console.log("Products", products);
       //declare variables to store the user inputs for id and quantity
       var itemChosen = parseInt(answer.id);
       var quantityChosen = answer.quantity;
@@ -72,7 +73,7 @@ function askUser(products) {
       var productChosen = products[itemChosen-1];
       
       if (!productChosen) {
-        console.log("Invalid ID, Please enter a correct ID from the table");
+        console.log("\nInvalid ID, Please enter a correct ID from the table\n");
         showItems();
       }
       
@@ -88,7 +89,7 @@ function askUser(products) {
         updateStocks(productChosen, quantityChosen);
       } else {
         //else ask the user to  Enter lesser quantity
-        console.log("Oops! Out of Stock! Try Again");
+        console.log("\nOops! Out of Stock! Try Again\n");
         //show the table of products again for the user to make a choice again
         showItems();
       }
@@ -97,7 +98,7 @@ function askUser(products) {
 
 function updateStocks(productChosen, quantityChosen) {
   //log a message for the user that the stocks are up to date
-  console.log("Stocks are up to date");
+  console.log("Updating Stocks, Check last column of the product for remaining stocks");
   //make an UPDATE query to the DB where stocks = original stock - user chosen quantity
   connection.query(
     "UPDATE products SET ? WHERE ?",
@@ -112,7 +113,7 @@ function updateStocks(productChosen, quantityChosen) {
     function(err, res) {
       if (err) throw err;
       //log the rows affected after UPDATE is performed
-      console.log(res.affectedRows);
+      console.log("\nAffected product stocks: ",res.affectedRows +"\n");
       //show the updated table again
       showItems();
       
