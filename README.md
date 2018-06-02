@@ -1,2 +1,3 @@
 # Bamazon-NodeJs-MySQL-App
-![Demo video](Bamazon-Demo-Vid.webm)
+
+[!Demo video](Jun%202%202018%203_16%20PM.webm)
