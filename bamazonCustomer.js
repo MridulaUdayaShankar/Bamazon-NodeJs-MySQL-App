@@ -115,8 +115,7 @@ function updateStocks(productChosen, quantityChosen) {
       console.log(res.affectedRows);
       //show the updated table again
       showItems();
-      //end connection to DB
-      connection.end();
+      
     }
   );
 }
